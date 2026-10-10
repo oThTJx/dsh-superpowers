@@ -29,6 +29,8 @@ Use this skill when an explanation **adds learning or review value**; **do not l
 
 **Explain decisions from observable work and evidence, not reconstructed hidden reasoning.**
 
+**Front-load path:line, then stop.** Lead with the concrete file locations (and line ranges when known) that justify the explanation; do not bury evidence under narrative. After the path:line anchors, stop — do not invent further justification.
+
 Source priority:
 
 1. Actual actions taken in this task

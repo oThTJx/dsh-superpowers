@@ -48,13 +48,13 @@ Honor any existing declared preference without asking. If the user declines cons
 
 **You have two mechanisms. Try them in this order.**
 
-### 1a. Native Worktree Tools (preferred)
+### 1a. Profile-supplied worktree tool (preferred when present)
 
-The user has asked for an isolated workspace (Step 0 consent). Do you already have a way to create a worktree? It might be a tool with a name like `EnterWorktree`, `WorktreeCreate`, a `/worktree` command, or a `--worktree` flag. If you do, use it and skip to Step 2.
+dsh has **no** built-in `EnterWorktree` / `WorktreeCreate` tool. If **this session's tool list** already exposes a worktree helper (whatever name the profile added), use that tool and skip to Step 2.
 
-Native tools handle directory placement, branch creation, and cleanup automatically. Using `git worktree add` when you have a native tool creates phantom state your harness can't see or manage.
+A profile-owned tool handles directory placement, branch creation, and cleanup. Using `git worktree add` when such a tool is present creates phantom state the profile cannot see or manage.
 
-Only proceed to Step 1b if you have no native worktree tool available.
+Only proceed to Step 1b when no worktree tool appears in the current tool list.
 
 ### 1b. Git Worktree Fallback
 
@@ -161,7 +161,7 @@ Ready to implement <feature-name>
 | Excuse | Reality |
 |--------|---------|
 | "I'm obviously not in a worktree — no need to check" | Run Step 0. Harness-created isolation and submodules both fool eyeballing; the detection commands settle it. |
-| "`git worktree add` is quicker than hunting for a native tool" | A native tool (e.g. `EnterWorktree`) owns placement, branching, and cleanup. Bypassing it is the #1 mistake — it creates phantom state your harness can't see or manage. |
+| "`git worktree add` is quicker than checking the tool list" | If this profile exposes a worktree tool, it owns placement, branching, and cleanup. Bypassing it creates phantom state the profile cannot see or manage. When no such tool is listed, Step 1b is correct. |
 | "The worktree directory is surely ignored already" | Run `git check-ignore`. An unignored worktree directory commits the whole tree into the repo. |
 | "Any directory name works" | Explicit instructions beat an existing project-local directory, which beats the `.worktrees/` default. |
 | "The workspace is fresh — baseline tests can wait" | A dirty baseline makes every later failure ambiguous. Run the tests now; proceeding past failures is your human partner's call. |

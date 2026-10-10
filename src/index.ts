@@ -31,11 +31,14 @@ import {
 /** Cordis plugin name used by loader diagnostics. */
 export const name = 'superpowers'
 
-/** Skills registry for the catalog. */
-export const inject = ['skills']
+/** Skills registry and system-prompt seam for catalog + bootstrap sections. */
+export const inject = ['skills', 'systemPrompt']
 
-/** Prompt section name for the Superpowers bootstrap preamble. */
+/** Prompt section name for the parent Superpowers bootstrap preamble. */
 const SECTION_NAME = 'skill:superpowers'
+
+/** Prompt section name for the short subagent worker preamble. */
+const WORKER_SECTION_NAME = 'skill:superpowers-worker'
 
 const PROVIDER_NAME = 'superpowers'
 const BOOTSTRAP_SKILL = 'using-superpowers'
@@ -58,13 +61,16 @@ export interface Config {
    * Defaults to the dsh-adapted `skills/` directory shipped in this package.
    */
   skillsRoot?: string
-  /** When false, skip the `skill:superpowers` system-prompt section. Default true. */
+  /**
+   * When false, skip both the parent `skill:superpowers` section and the
+   * subagent `skill:superpowers-worker` section. Default true.
+   */
   bootstrap?: boolean
 }
 
 /** Schemastery validation for {@link Config}. */
 export const Config: z<Config> = z.object({
-  skillsRoot: z.string(),
+  skillsRoot: z.string().min(1),
   bootstrap: z.boolean().default(true),
 })
 
@@ -78,10 +84,12 @@ interface ParsedSkillFile {
   readonly tier?: SkillTier
 }
 
-/** Catalog/routing hint for Matt skill priority metadata (not a runtime router). */
-type SkillTier = 'core' | 'utility' | 'session'
+/** Catalog metadata label for tiered skills (not a runtime router). */
+type SkillTier = 'core' | 'utility' | 'session' | 'discipline' | 'product'
 
-const SKILL_TIERS: ReadonlySet<string> = new Set(['core', 'utility', 'session'])
+const SKILL_TIERS: ReadonlySet<string> = new Set([
+  'core', 'utility', 'session', 'discipline', 'product',
+])
 
 /**
  * Resolve the skills root directory for discovery and bootstrap.
@@ -193,6 +201,41 @@ export async function loadSuperpowersSkillAt(
 }
 
 /**
+ * High-attention standing order placed ahead of the full `using-superpowers` body.
+ * Keeps skill-first / anti-stack / parallel-dispatch rules visible before the long skill text.
+ */
+const BOOTSTRAP_STANDING_ORDER = [
+  '## Standing order (before any tool call)',
+  '',
+  '1. Call the dsh `skill` tool with the exact catalog name **before** clarifying, exploring, reading files, or acting — unless every tiny-edit condition in `using-superpowers` holds.',
+  '2. Announce `Using [skill] to [purpose]`, then follow that skill. Do not invent a second workflow.',
+  '3. Anti-stack: load **one** process skill first; add supporting skills only when that skill delegates them or the user requires them. "Not an automatic workflow" means do not stack — not "skip `skill`".',
+  '4. Independent domains in one turn: issue multiple `subagent` / `subagent_fork` calls in the **same** assistant message.',
+  '5. After dispatch: finish only local work that does **not** need child results, then **end this turn**. Parent↔child talk uses adjacent `send_message` (Steer; tool returns delivery ack only — replies and `subagent-settled` arrive via inbox). Do **not** loop `list_agents` or status-ping `send_message` ("how is it going?") to wait.',
+  '6. Tool names, wait/resume, and harness gates: **DeepSeek Harness platform adaptation** at the end of this section.',
+].join('\n')
+
+/**
+ * Short standing copy for subagent-origin sessions.
+ * Parent keeps full `using-superpowers` bootstrap; children execute a brief and must
+ * not over-generalize SUBAGENT-STOP into "skip every skill".
+ * @returns model-facing worker preamble text.
+ */
+export function buildWorkerPreamble(): string {
+  return [
+    '<EXTREMELY_IMPORTANT>',
+    'You are a Superpowers **worker** subagent.',
+    '',
+    '1. Execute the dispatch brief. Do not invent a second process workflow or re-route the parent task.',
+    '2. `using-superpowers` / skill-first orchestration belongs to the **parent**. SUBAGENT-STOP means ignore that standing skill — **not** "refuse every catalog skill".',
+    '3. Call `skill` only when the brief names a skill, or a catalog entry is clearly required to finish the brief.',
+    '4. Do the assigned work yourself unless the brief says otherwise. Prefer finishing over polling parent state.',
+    '5. You may `send_message` your direct parent (and the parent may message you): delivery ack only; put self-contained findings in the message body. Settlement is separate and unconditional.',
+    '</EXTREMELY_IMPORTANT>',
+  ].join('\n')
+}
+
+/**
  * Build the SessionStart-equivalent preamble Superpowers injects on other harnesses.
  * @param usingSuperpowersRaw - full `using-superpowers` SKILL.md text (including frontmatter).
  * @param dshToolsMarkdown - dsh platform adaptation markdown.
@@ -202,6 +245,8 @@ export function buildBootstrapPreamble(usingSuperpowersRaw: string, dshToolsMark
   return [
     '<EXTREMELY_IMPORTANT>',
     'You have superpowers.',
+    '',
+    BOOTSTRAP_STANDING_ORDER,
     '',
     '**Below is the full content of your `using-superpowers` skill — your introduction to using skills.',
     'For all other skills, call the dsh `skill` tool with the exact catalog name.**',
@@ -269,16 +314,24 @@ export function apply(ctx: Context, config: Config = {}): void {
 
   if (!bootstrap) return
 
-  // Load once at plugin apply; the preamble is static across the session.
+  // Load once at plugin apply; preambles are static across the session.
   const preamble = loadBootstrapPreamble(skillsRoot)
+  const workerPreamble = buildWorkerPreamble()
 
   ctx.on('system-prompt/assemble', async (_assembly, context, next) => {
-    // Agentless diagnostics carry no bootstrap; subagent sessions skip it.
+    // Agentless diagnostics carry no bootstrap.
     const agent = context.agent
-    if (agent === undefined || agent.session.header.origin === 'subagent') {
+    if (agent === undefined) {
       return next()
     }
     const result = await next()
+    // Subagent sessions get a short worker preamble, not full using-superpowers.
+    if (agent.session.header.origin === 'subagent') {
+      return {
+        ...result,
+        sections: [{ name: WORKER_SECTION_NAME, text: workerPreamble }, ...result.sections],
+      }
+    }
     return {
       ...result,
       sections: [{ name: SECTION_NAME, text: preamble }, ...result.sections],
@@ -450,7 +503,7 @@ function parseSkillTier(data: Record<string, unknown>): SkillTier | undefined {
   if (typeof value === 'string' && SKILL_TIERS.has(value)) {
     return value as SkillTier
   }
-  throw new TypeError('frontmatter field "tier" must be one of: core, utility, session')
+  throw new TypeError('frontmatter field "tier" must be one of: core, utility, session, discipline, product')
 }
 
 function rejectLegacyInvocationKey(data: Record<string, unknown>, legacy: string, canonical: string): void {

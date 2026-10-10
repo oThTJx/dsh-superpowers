@@ -30,9 +30,11 @@ Improve clarity and structure **without changing behavior**. This is a quality p
 ## The Process
 
 1. **Confirm green baseline** — run relevant tests; do not simplify on red
-2. **One simplification at a time** — rename, extract, inline, or dedupe; verify after each
-3. **Stay at identical behavior** — no "while I'm here" fixes or feature additions
-4. **Use `verification-before-completion`** before claiming the pass is done
+2. **Chesterton's Fence** — before removing or collapsing a structure, understand why it exists; only then decide the reason no longer applies
+3. **One simplification at a time** — rename, extract, inline, or dedupe; verify after each
+4. **Stay at identical behavior** — no "while I'm here" fixes or feature additions
+5. **Rule of 500** — if a refactor would touch more than ~500 lines, prefer automation (codemod / scripted transform) over hand edits
+6. **Use `verification-before-completion`** before claiming the pass is done
 
 ## Red Flags
 

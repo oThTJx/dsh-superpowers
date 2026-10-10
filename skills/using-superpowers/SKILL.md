@@ -28,6 +28,10 @@ Then announce "Using [skill] to [purpose]" and follow the skill exactly. If it h
 
 When multiple skills apply, process skills come first — they set the approach, then implementation skills carry it out. Brainstorming and systematic-debugging are Superpowers' most common process skills, but the rule holds for any of them.
 
+If intent is not yet a buildable contract (idea survival or multi-stakeholder alignment), load one product-tier skill before the implementation spine; otherwise use the existing spine. Do not stack product and implementation utilities on tiny edits.
+
+When starting non-tiny work, surface a short ASSUMPTIONS I'M MAKING block (or state none). If a consumer-project CONSTRAINTS.md exists, treat it as the standing threshold bar beside per-task acceptance criteria.
+
 Process spine first. Load one process skill appropriate to the task.
 Only add supporting skills when that process skill explicitly delegates them, or the user clearly requires them.
 Do not stack utilities or multiple core skills on trivial edits.
@@ -54,7 +58,7 @@ Load these only when the evidence matches; they are not higher-priority implemen
 | **dsh-harness-contributor** | Working inside the deepseek-harness repository (markers in `dsh-tools.md`) — **repo discipline extension**; composes with `incremental-implementation` |
 | **explaining-changes** | User asks why; review or teach-back adds value — **not** because implementation finished |
 
-Skills are **contextual guidance, not an automatic workflow**. Load only the skill relevant to the current decision.
+Skills are **contextual guidance, not an automatic workflow**: that means **do not stack** multiple process or core skills on one decision, and do not invent a second workflow outside the loaded skill. It does **not** mean you may skip calling `skill` first. Skill-first still applies; anti-stack limits *how many* you load after the check.
 
 ### Tiny edits
 
@@ -72,7 +76,7 @@ Some edits are so small that loading process or core skills adds ceremony withou
 
 - "Let's build X" → brainstorming first, then implementation skills.
 - "Fix this bug" → systematic-debugging first, then domain skills.
-- "Rename this variable from foo to bar." → direct tiny-edit path only; do not stack `research`, `domain-modeling`, `codebase-design`, `prototype`, or `grilling`.
+- "Rename this variable from foo to bar." → direct tiny-edit path only; do not stack `research`, `domain-modeling`, `codebase-design`, `prototype`, `grilling`, `doubt-driven-development`, `constraint-driven-development`, `forge-idea`, `prd`, `party-mode`, `prfaq`, `ux-spec`, `retrospective`, or `correct-course`.
 
 ## Red Flags
 
@@ -112,9 +116,7 @@ These are **rationalizations** — reasons to skip skill steps. If you catch you
 
 ## Platform Adaptation
 
-If your harness is DeepSeek Harness (dsh), read its reference file for special instructions:
-
-- DeepSeek Harness: `references/dsh-tools.md`
+Read `references/dsh-tools.md` for DeepSeek Harness tool names, wait/resume, model routing, and harness gates.
 
 ## User Instructions
 
@@ -122,11 +124,12 @@ User instructions (AGENTS.md, CLAUDE.md, etc, direct requests) take precedence o
 
 ## Compliance Check
 
-Before taking ANY implementation action (writing code, creating files, running commands), ask yourself:
+Before **any** response or tool call (including clarifying questions, exploring the codebase, reading files, or running commands) — except a verified tiny-edit path — ask yourself:
 
-1. **Did I load the relevant skill?** If not, load it now.
-2. **Did I complete ALL steps in the skill's checklist?** If not, return to the checklist.
-3. **Did I get explicit approval for each gate?** If not, present the design and wait.
-4. **Am I rationalizing?** Check the Rationalizations table above. If you match any entry, STOP.
+1. **Did I load the relevant skill with `skill`?** If not, load it now. "I need context first" is not an exception (see Red Flags).
+2. **Did I announce `Using [skill] to [purpose]` and follow that skill?** If not, return to it.
+3. **Did I complete the skill's required gates/checklist so far?** If not, return to the checklist.
+4. **Did I get explicit approval for each gate the skill requires?** If not, present the design (or other gate material) and wait.
+5. **Am I rationalizing a skip?** Check the Red Flags and Rationalizations tables. If you match any entry, STOP.
 
-If you cannot answer "yes" to all four questions, you are NOT ready to implement. Return to the skill and complete the missing steps.
+If you cannot answer "yes" to these questions, you are not ready to act. Load or finish the skill first.

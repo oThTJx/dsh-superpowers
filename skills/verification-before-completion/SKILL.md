@@ -1,6 +1,6 @@
 ---
 name: verification-before-completion
-description: Use when about to claim work is complete, fixed, or passing, before committing or creating PRs - requires running verification commands and confirming output before making any success claims; evidence before assertions always
+description: Use when about to claim work is complete, fixed, or passing, before committing or creating PRs - requires running verification commands and confirming output before making any success claims; evidence before assertions always. Do not use mid-implementation before a completion claim, or for exploratory reading with no success/fixed/passing assertion.
 ---
 
 # Verification Before Completion
@@ -18,6 +18,8 @@ NO COMPLETION CLAIMS WITHOUT FRESH VERIFICATION EVIDENCE
 ```
 
 If you haven't run the verification command in this message, you cannot claim it passes.
+
+When a consumer-project **CONSTRAINTS.md** exists, treat it as the standing threshold bar (floor-guard / ratchets) beside per-task acceptance criteria. Do not invent a deepseek-harness root CONSTRAINTS.md that duplicates `AGENTS.md`.
 
 ## The Gate Function
 

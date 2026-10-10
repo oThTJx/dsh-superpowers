@@ -1,6 +1,70 @@
-# Bilingual-pair consistency record (docs/i18n/README.md): the git blob hash of each
-# side as of the last confirmed-consistent state. Both languages carry equal authority;
-# after editing either side, bring the other along and re-record with:
+# Bilingual-pair consistency record for README.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write packages/skill/superpowers/README.md
-README.md: 8fdcfae73a60047bee0989e80372f80a53de1586
-README.zh.md: 71226c7ff14449f927fc97713c0a321f729164e4
+/firefly0621-dsh-superpowers:
+  en: 27aa0936e78e5976
+  zh: 45abb711db2e5e32
+/firefly0621-dsh-superpowers/what-it-restores:
+  en: 30db9509df87762e
+  zh: fbd62deaeb35cc63
+/firefly0621-dsh-superpowers/matt-skills-and-fused-extensions:
+  en: 21ddbe0c5e9c2beb
+  zh: 95d6b5275a381548
+/firefly0621-dsh-superpowers/install-into-a-dsh-profile:
+  en: 6bf75e8236da93fb
+  zh: 9126c72fbf820148
+/firefly0621-dsh-superpowers/install-into-a-dsh-profile/local-pre-publish-check:
+  en: 544ea5c04dc22b9f
+  zh: 8aadd03aba4da5f9
+/firefly0621-dsh-superpowers/enable-from-this-monorepo-without-npm:
+  en: f742062cfbf4197f
+  zh: 033a6f7c3d635f4c
+/firefly0621-dsh-superpowers/config:
+  en: 3aeb2ce776c87c01
+  zh: 560369727b3abb8b
+/firefly0621-dsh-superpowers/update-superpowers:
+  en: 611bd8166180de0c
+  zh: 28a727700770c72f
+/firefly0621-dsh-superpowers/update-superpowers/content-baseline-and-sync-debt:
+  en: f858267f4ce90c4c
+  zh: 6d9deceed0939ac1
+/firefly0621-dsh-superpowers/model-experience:
+  en: 215e7ba838619b7b
+  zh: 215e7ba838619b7b
+/firefly0621-dsh-superpowers/model-experience/system-prompt-bootstrap:
+  en: b1963e0d262d5567
+  zh: b1963e0d262d5567
+/firefly0621-dsh-superpowers/model-experience/system-prompt-bootstrap/what-the-model-sees:
+  en: 733965dba817da7e
+  zh: bf0ad3acf7325fab
+/firefly0621-dsh-superpowers/model-experience/system-prompt-bootstrap/what-the-model-sees/verbatim-parent-framing:
+  en: f3a33c46bc284ed8
+  zh: f3a33c46bc284ed8
+/firefly0621-dsh-superpowers/model-experience/system-prompt-bootstrap/what-the-model-sees/verbatim-worker-preamble:
+  en: 9d6170745df786d8
+  zh: 9d6170745df786d8
+/firefly0621-dsh-superpowers/model-experience/system-prompt-bootstrap/token-effect:
+  en: ad61874563296675
+  zh: f2854beee9f2b3ee
+/firefly0621-dsh-superpowers/model-experience/system-prompt-bootstrap/kv-cache-effect:
+  en: 0fb43426eedad2ae
+  zh: 6c9d887781506948
+/firefly0621-dsh-superpowers/model-experience/skill-catalog-and-skill-tool:
+  en: c7f9dafe1a322ae6
+  zh: c7f9dafe1a322ae6
+/firefly0621-dsh-superpowers/model-experience/skill-catalog-and-skill-tool/what-the-model-sees:
+  en: 1792e0b7b18b8984
+  zh: a5e33f0eed671773
+/firefly0621-dsh-superpowers/model-experience/skill-catalog-and-skill-tool/token-effect:
+  en: 270a1e63f7d8c1fb
+  zh: b857fec6fbc357c4
+/firefly0621-dsh-superpowers/model-experience/skill-catalog-and-skill-tool/kv-cache-effect:
+  en: f046e8e47ea9a9f8
+  zh: 9084224378958a46
+/firefly0621-dsh-superpowers/version-compatibility:
+  en: 2d85e835434e4b90
+  zh: a0333c47365cf042
+/firefly0621-dsh-superpowers/known-limitations-and-deferred-work:
+  en: fcd00eeba99b405f
+  zh: 7f33f68414adf1a5

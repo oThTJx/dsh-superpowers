@@ -22,7 +22,7 @@ Implement multi-file work in **vertical slices**: one coherent change, verify, c
 - Single-file edits (use tiny-edit if all five conditions hold, otherwise TDD alone)
 - Bug investigation (use `systematic-debugging` first; load this skill only for the multi-file fix phase)
 - Throwaway prototypes
-- An approved multi-task plan in a separate session (use `executing-plans` instead)
+- An approved multi-task plan the partner chose to run inline, or when no subagent tool is available (use `executing-plans` instead); when subagents are available and per-task review is wanted, use `subagent-driven-development`
 
 ## The Slice Loop
 
@@ -33,6 +33,24 @@ For each slice:
 3. **Verify** — run the checks that prove this slice (use `verification-before-completion` before claiming pass)
 4. **Checkpoint when appropriate** — pause for review when the slice crosses a risky boundary, changes public API, or the plan marks a review gate; otherwise continue
 5. **Commit mentally** — leave the tree in a state the next slice can build on
+
+## Risk-first and contract-first
+
+Prefer **Risk-first** slicing: prove the riskiest seam first so later slices sit on known ground. When UI and backend must move in parallel, use **contract-first** (shared types / API contract before either side expands).
+
+## Feature flags for incomplete work
+
+If a slice must merge before the feature is user-ready, put incomplete behavior behind a **feature flag** (or equivalent gate) so the default path stays safe. Do not leave half-wired user-visible paths on by default.
+
+## Scope discipline
+
+Touch only what the task requires. If you notice adjacent debt, note it — do not fix it in this slice:
+
+```
+NOTICED BUT NOT TOUCHING:
+- <path> — <observation> (unrelated to this task)
+→ Want a follow-up task?
+```
 
 ## Red Flags
 

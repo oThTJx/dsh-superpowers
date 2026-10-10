@@ -11,7 +11,6 @@ import { fileURLToPath } from 'node:url'
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const required = [
   'lib/index.js',
-  'lib/invariant.js',
   'cordis.patch.yml',
   'assets/NOTICE.md',
   'skills/using-superpowers/SKILL.md',

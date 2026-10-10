@@ -58,6 +58,14 @@ When the shape of that interface is itself in question (depth, where the seam be
 - **Tautological:** the assertion recomputes the expected value the way the code does, so it passes by construction. Expected values must come from an independent source of truth (literal, worked example, spec).
 - **Horizontal slicing:** writing all tests first, then all implementation. Work in **vertical slices** instead: one test → one implementation → repeat.
 
+## Test pyramid, Beyoncé Rule, and DAMP
+
+Invest testing effort in a **pyramid**: mostly fast unit tests, fewer integration tests, fewest end-to-end tests.
+
+**Beyoncé Rule:** if you liked it, you should have put a test on it. Refactors and migrations are not responsible for catching your bugs — your tests are.
+
+In production code prefer DRY; in tests prefer **DAMP** (Descriptive And Meaningful Phrases) — each test should read as a self-contained specification even if that means some duplication.
+
 ## Red-Green-Refactor
 
 **Authoritative cycle:** red → green → **refactor** (stay green). Refactor is part of this loop. Do not defer cleanup to a later review stage.
@@ -196,6 +204,16 @@ Confirm:
 **Test fails?** Fix code, not test.
 
 **Other tests fail?** Fix now.
+
+**"Other tests" means the project's suite, not just your file.** A
+green run of the test you wrote is not a green suite. Before you call
+the change done, run the project's test command (bare `pytest`,
+`npm test`, `cargo test` — whatever the repo uses) even when your task
+named only one test file. A scope statement in your task bounds the
+deliverable, not your verification. Any failure that run shows —
+including one you didn't cause — goes in your report by name; a red
+test you watched scroll past and didn't mention is a report falsified
+by omission.
 
 ### REFACTOR - Clean Up
 

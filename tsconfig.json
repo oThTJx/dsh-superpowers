@@ -12,7 +12,6 @@
     { "path": "../skill" },
     { "path": "../../core/agent" },
     { "path": "../../core/system-prompt" },
-    { "path": "../../llm/llm" },
-    { "path": "../../runtime-diagnostics/invariants" }
+    { "path": "../../llm/llm" }
   ]
 }

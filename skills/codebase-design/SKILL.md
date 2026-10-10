@@ -10,6 +10,10 @@ Design **deep modules**: a lot of behaviour behind a small interface, placed at 
 
 When domain vocabulary is unsettled, load `domain-modeling`. When agreeing TDD seams, `test-driven-development` points here for the shared terms.
 
+## Architecture spine test
+
+Before locking a design, run a short **spine test**: name the critical path modules, the seams between them, and one falsifiable check per seam (what would prove the depth claim wrong). If you cannot name seams and checks, the design is not ready.
+
 ## Glossary
 
 Use these terms exactly: don't substitute "component," "service," "API," or "boundary." Consistent language is the whole point.

@@ -39,14 +39,23 @@ Skills speak in actions ("dispatch a subagent", "create a todo", "read a file").
 - After review findings, paste a short fix brief (finding list + constraints) into `send_message`. The tool returns no child reply; the child's transcript and any settlement notice are the source of what it did.
 - Escalation rounds that require a stronger model may start a **new** child with an explicit higher-tier `model` (and related options when the tool schema exposes them).
 
+## Adjacent Agent messaging
+
+Parent and continuable child share one adjacent `send_message({ agent_id, message })` operation (direct parent ↔ direct child only):
+
+- Running target → Steer at the nearest step; idle target → start a turn.
+- The tool returns **delivery confirmation only** (`message delivered` / `messageId`). It never returns the other agent's reply.
+- The other agent's content arrives later as an inbox message (`agent-message`). Child completion also always produces a separate `subagent-settled` notice — even if the child already messaged, or never did.
+- Use `send_message` for **substantive** briefs (fix rounds, clarifications, self-contained findings). Do not use it as a status ping while waiting.
+
 ## Waiting on children
 
-dsh delivers child completion to the parent as a **settlement notice** (`subagent-settled` / related report surfaces). There is no long-poll wait tool, and **`list_agents` is not a wait**.
+dsh delivers child completion to the parent as a **settlement notice** (`subagent-settled` / related report surfaces). There is no long-poll wait tool, and **`list_agents` is not a wait**. Mid-flight `send_message` (above) is real communication; it is not a substitute for settlement.
 
 After you dispatch background / continuable children and finish any **local** work you can do without their results (ledger lines, packaging the next review brief, reading already-written report files):
 
-1. **End this turn.** Do not call `list_agents`, `send_message` ("how is it going?"), or `interrupt_agent` just to pass time.
-2. On the **next** turn, consume the settlement notice and the child's report (or report file path). Then continue the skill (review, fix round, next task).
+1. **End this turn** when you have nothing left that does not need the child's results. Do not call `list_agents`, status-ping `send_message` ("how is it going?"), or `interrupt_agent` just to pass time.
+2. On the **next** turn (or at the next step if you stayed running and a Steer notice already landed), consume `agent-message` / settlement content and continue the skill (review, fix round, next task).
 3. Use `list_agents` only when a settlement notice arrived but the report is missing or unusable, or when you must chase a child that looks stuck **after** a notice should have arrived — never as a status loop inside one turn.
 4. `interrupt_agent` is for runaway or clearly wrong children, not impatience while waiting for settlement.
 

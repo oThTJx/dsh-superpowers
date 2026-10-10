@@ -7,7 +7,9 @@ tier: session
 
 # Handoff
 
-Write a handoff document summarising the current conversation so a fresh agent can continue the work. Save to the temporary directory of the user's OS — not the current workspace.
+Write a handoff document summarising the current conversation so a fresh agent can continue the work. Save to the temporary directory of the user's OS (`$TMPDIR`, else `/tmp`; `%TEMP%` on Windows) — not the current workspace.
+
+**Front-load path:line, then stop.** Lead with the concrete file locations (and line ranges when known) the next agent must open; then stop expanding narrative around them. Reference other artifacts by path instead of pasting them.
 
 Include a "suggested skills" section in the document, naming which skills the next agent should load via the `skill` tool (kebab-case names).
 

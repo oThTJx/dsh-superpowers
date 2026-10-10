@@ -9,4 +9,4 @@ tier: session
 
 Stop. That last message did not land: re-pitch it.
 
-Give a little bit of context, talk in ASD-STE100 Simplified Technical English, and use the ubiquitous language from `CONTEXT.md` (follow `CONTEXT-MAP.md` to the right one if the repo has more than one).
+Give a little bit of context, talk in ASD-STE100 Simplified Technical English, and use the ubiquitous language from `GLOSSARY.md` (follow `GLOSSARY-MAP.md` to the right one if the repo has more than one; accept legacy `CONTEXT.md` / `CONTEXT-MAP.md` until renamed).

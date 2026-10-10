@@ -1,6 +1,6 @@
 ---
 name: dispatching-parallel-agents
-description: Use when facing 2+ independent tasks that can be worked on without shared state or sequential dependencies
+description: Use when facing 2+ independent tasks that can be worked on without shared state or sequential dependencies. Do not use for a single domain, for related failures that share root cause, or while you still need sequential shared discovery before domains are clear.
 ---
 
 # Dispatching Parallel Agents
@@ -68,10 +68,10 @@ Each agent gets:
 Issue all three subagent dispatches in the same response — they run in parallel:
 
 ```text
-Subagent (general-purpose): "Fix agent-tool-abort.test.ts failures"
-Subagent (general-purpose): "Fix batch-completion-behavior.test.ts failures"
-Subagent (general-purpose): "Fix tool-approval-race-conditions.test.ts failures"
-# All three run concurrently.
+subagent: "Fix agent-tool-abort.test.ts failures"
+subagent: "Fix batch-completion-behavior.test.ts failures"
+subagent: "Fix tool-approval-race-conditions.test.ts failures"
+# All three run concurrently (same assistant message; description/prompt only — no foreign agent-kind field).
 ```
 
 Multiple dispatch calls in one response = parallel execution. One per response = sequential.

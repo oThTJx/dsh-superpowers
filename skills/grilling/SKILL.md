@@ -11,6 +11,20 @@ Interview the user relentlessly until you reach a shared understanding. Map the 
 
 This skill is for **explicit user requests** (“grill this”, “stress-test this architecture”, “challenge this plan”). Architectural brainstorming already inlines the same methodology — do not treat this skill as a required phase before `writing-plans`.
 
+## Confidence and hollow agreement
+
+Before each round, state a one-line hypothesis of the user's intent plus an honest **confidence** percentage (0–100%). When confidence is below ~70%, name what is still unresolved.
+
+Reject **hollow-yes** / empty-agreement as confirmation. These are **not** yes:
+
+- "Whatever you think is best."
+- "Sounds good." / "Sure, let's go." without engaging trade-offs
+- Silence followed by "okay let's start"
+
+Re-ask with concrete options, or require an explicit yes that engages the trade-offs.
+
+When restating intent, always include **Out of scope** — what you are explicitly **not** doing.
+
 ## Rounds and the frontier
 
 Work the tree in **rounds**. The **frontier** is every decision whose prerequisites are already settled: the questions you can ask _now_ without guessing at answers you haven't heard yet. Ask the whole frontier in one round. Then wait for the user's answers before the next round.
@@ -29,9 +43,13 @@ Format each frontier question like so:
 **Recommendation:** …
 **Reason:** …
 **What would change this recommendation:** …
+
+---
 ```
 
-No bare “Recommended: A” without trade-offs, reason, and change conditions. User acceptance of a recommendation is provisional until trade-offs are engaged or the user explicitly accepts.
+Separate frontier questions in a round with `---` so each decision stays scannable. No bare “Recommended: A” without trade-offs, reason, and change conditions. User acceptance of a recommendation is provisional until trade-offs are engaged or the user explicitly accepts.
+
+Word each question so **yes** accepts your recommended answer (the user can still pick another option explicitly).
 
 ## Facts vs decisions
 

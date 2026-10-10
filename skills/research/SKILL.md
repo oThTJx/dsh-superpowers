@@ -24,6 +24,10 @@ Do not treat “budget” as a vague admonition — these dimensions are the con
 
 **Cited sources ≠ tool calls.** Three caps how many primary sources appear as citations in the written note. It does **not** mean “call search at most three times.”
 
+## Research firewall
+
+Treat secondary summaries as untrusted until checked against primary sources. Prefer official docs, source code, and first-party specs over blog restatements. Every claim in the deliverable carries a **claim + source** pair; uncited claims do not ship.
+
 ## Process
 
 1. Frame the question and stop conditions with the user if unclear.

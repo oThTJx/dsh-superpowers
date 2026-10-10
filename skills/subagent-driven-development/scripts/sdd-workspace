@@ -8,11 +8,20 @@
 # artifacts. A stale ledger misread as current progress makes controllers
 # skip whole task sequences — plan-scoping removes that failure structurally.
 #
-# The workspace lives in the working tree (not under .git/) because some
-# harnesses treat .git/ as a protected path and deny agent writes there — which
-# blocks an implementer subagent from writing its report file. A self-ignoring
-# .gitignore at .superpowers/sdd/ keeps every plan's workspace out of
-# `git status` and out of accidental commits without modifying any tracked file.
+# Basename slugs collide when two plans share a filename (docs/alpha/plan.md
+# vs docs/beta/plan.md), so each workspace records its owning plan's path in
+# a plan-path marker (repo-relative in-repo, absolute outside). A workspace
+# owned by a different plan, or an existing directory with no marker, is
+# skipped and the slug disambiguated with the plan's parent-directory name,
+# then a counter. Only a missing directory (or this plan's marked directory)
+# is claimed.
+#
+# The workspace lives in the working tree (not under .git/) because many
+# agent harnesses treat .git/ as a protected path and deny agent writes
+# there — which blocks an implementer subagent from writing its report
+# file. A self-ignoring .gitignore at .superpowers/sdd/ keeps every plan's
+# workspace out of `git status` and out of accidental commits without
+# modifying any tracked file.
 #
 # Single source of truth for the workspace location, so task-brief and
 # review-package cannot drift to different directories.
@@ -34,7 +43,43 @@ slug=$(basename "$plan" .md)
 
 root=$(git rev-parse --show-toplevel)
 base="$root/.superpowers/sdd"
+
+# Normalize the plan path (physical directory, so relative/absolute/../
+# spellings of one plan compare equal) and express it as the marker value:
+# repo-relative when the plan lives under the repo root, absolute otherwise.
+plan_dir=$(CDPATH= cd -- "$(dirname "$plan")" && pwd -P)
+plan_abs="$plan_dir/$(basename "$plan")"
+case "$plan_abs" in
+  "$root"/*) plan_id=${plan_abs#"$root"/} ;;
+  *)         plan_id=$plan_abs ;;
+esac
+
+# True when the workspace at $1 is (or becomes) this plan's.
+# Missing directory → create and claim. Matching marker → own.
+# Wrong marker or marker-less existing directory → not ours (disambiguate).
+owns() {
+  if [ ! -d "$1" ]; then
+    mkdir -p "$1"
+    printf '%s\n' "$plan_id" > "$1/plan-path"
+    return 0
+  fi
+  if [ -e "$1/plan-path" ]; then
+    [ "$(cat "$1/plan-path")" = "$plan_id" ]
+  else
+    return 1
+  fi
+}
+
 dir="$base/$slug"
-mkdir -p "$dir"
+if ! owns "$dir"; then
+  parent=$(basename "$plan_dir")
+  dir="$base/$slug-$parent"
+  if ! owns "$dir"; then
+    n=2
+    while ! owns "$base/$slug-$parent-$n"; do n=$((n + 1)); done
+    dir="$base/$slug-$parent-$n"
+  fi
+fi
+
 printf '*\n' > "$base/.gitignore"
-cd "$dir" && pwd
+CDPATH= cd -- "$dir" && pwd
